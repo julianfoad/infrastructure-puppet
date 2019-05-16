@@ -79,7 +79,9 @@ def main():
     # (OPTIONAL) If no newname is provided use the original name.
     if not args.newname:
         newname=args.victim
-    
+    else:
+        newname=args.newname
+
     # Only continue if the specified group exists in the destination org.
     # Return $?=3 if the group doesn't exist
     has_group = slugInOrg(args.dest, args.slug, head)
