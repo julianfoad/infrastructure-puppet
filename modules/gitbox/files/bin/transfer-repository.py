@@ -97,7 +97,7 @@ def main():
     renameRepo(args.victim, newname, args.origin, head)
 
     # Update the permissions of the group that has been assigned to the repository in the destination org to write
-    updatePerms(has_repo, has_group, "write", args.dest, head)
+    updatePerms(has_repo, has_group, "push", args.dest, head)
 
 if __name__ == "__main__":
         main()
