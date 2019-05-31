@@ -14,7 +14,7 @@ def getOpts ():
         parser.add_argument('-o', '--origin', required=False, default="ApacheInfra", help="original repo owner, defaults to 'ApacheInfra'")
         parser.add_argument('-n', '--newname', help="name of repository under new owner")
         parser.add_argument('-t', '--tokenfile', required=True, help='token file')
-        parser.add_argument('-s', '--slug', required=True, help='team with access to new repo')
+        parser.add_argument('-s', '--slug', help='team with access to new repo')
         args = parser.parse_args()
         return args
 
@@ -39,7 +39,7 @@ def renameRepo (victim, newname, org, head):
         requires reponame, newname, org, headers (with token embedded)"""
     rename_data={ "name": newname }
     uri=url + "/repos/" + org + "/" + victim
-    requests.patch(uri, headers=head, data=json.dumps(rename_data)).json()
+    r=requests.patch(uri, headers=head, data=json.dumps(rename_data)).json()
 
 # Transfer a repository to a new github org
 def transferRepo (victim, dest, origin, group_id, head):
@@ -90,10 +90,11 @@ def main():
     # Check to see if the requested new name is already present in the destination org
     # return $?=2 if a repository with that name already exists.
     repo_in_dest = repoInOrg(args.dest, newname, head)
-    if not repo_in_dest('message'):
+    if not repo_in_dest.get('message'):
         print "Requested repository: " + newname + " already exists in the destination org"
         sys.exit(2)
 
+    sys.exit(100)
     # Only continue if the specified group exists in the destination org.
     # Return $?=3 if the group doesn't exist
     has_group = slugInOrg(args.dest, args.slug, head)
@@ -109,7 +110,7 @@ def main():
     renameRepo(args.victim, newname, args.origin, head)
 
     # Update the permissions of the group that has been assigned to the repository in the destination org to write
-    updatePerms(has_repo, has_group, "push", args.dest, head)
+#    updatePerms(has_repo, has_group, "push", args.dest, head)
 
 if __name__ == "__main__":
         main()
