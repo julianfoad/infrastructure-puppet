@@ -93,8 +93,6 @@ def main():
     if not repo_in_dest.get('message'):
         print "Requested repository: " + newname + " already exists in the destination org"
         sys.exit(2)
-
-    sys.exit(100)
     # Only continue if the specified group exists in the destination org.
     # Return $?=3 if the group doesn't exist
     has_group = slugInOrg(args.dest, args.slug, head)
