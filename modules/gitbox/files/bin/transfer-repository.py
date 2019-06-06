@@ -14,7 +14,6 @@ def getOpts ():
         parser.add_argument('-o', '--origin', required=False, default="ApacheInfra", help="original repo owner, defaults to 'ApacheInfra'")
         parser.add_argument('-n', '--newname', help="name of repository under new owner")
         parser.add_argument('-t', '--tokenfile', required=True, help='token file')
-        parser.add_argument('-s', '--slug', help='team with access to new repo')
         args = parser.parse_args()
         return args
 
@@ -74,6 +73,8 @@ def main():
     my_token = token_file.readlines()[0].rstrip()
     head={ 'Authorization': 'token ' + my_token }
 
+    has_group = slugInOrg(args.dest, 'root', head)
+
     # Only continue if the $org/$repo combination is valid.
     # Return $?=2 if the repository doesn't exist
     has_repo = repoInOrg(args.origin, args.victim, head)
@@ -93,22 +94,14 @@ def main():
     if not repo_in_dest.get('message'):
         print "Requested repository: " + newname + " already exists in the destination org"
         sys.exit(2)
-    # Only continue if the specified group exists in the destination org.
-    # Return $?=3 if the group doesn't exist
-    has_group = slugInOrg(args.dest, args.slug, head)
-    if not has_group.get('id'):
-        print "No group named: " + args.slug + " exists in the specified destination org"
-        sys.exit(3)
+
 
     # Transfer the repository
-    transferRepo(args.victim, args.dest, args.origin, has_group.get('id'), head)
+#    transferRepo(args.victim, args.dest, args.origin, has_group.get('id'), head)
 
     # Rename the repository (whether the name has changed or not)
     # This could be eliminated if args.newname isn't provided but w/e
-    renameRepo(args.victim, newname, args.origin, head)
-
-    # Update the permissions of the group that has been assigned to the repository in the destination org to write
-#    updatePerms(has_repo, has_group, "push", args.dest, head)
+#    renameRepo(args.victim, newname, args.origin, head)
 
 if __name__ == "__main__":
         main()
