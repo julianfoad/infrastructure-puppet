@@ -64,7 +64,7 @@ class svnqavm_pvm_asf (
       environment => 'SVN=/usr/local/svn-current/bin/svn';
 
     'Update our upcoming changes list':
-      command     => 'cd ~/src/svn/1.11.x && chronic ~/src/svn/site/tools/generate-upcoming-changes-log.sh',
+      command     => 'cd ~/src/svn/latest && chronic ~/src/svn/site/tools/generate-upcoming-changes-log.sh',
       user        => 'svnsvn',
       hour        => 4,
       minute      => 15,
